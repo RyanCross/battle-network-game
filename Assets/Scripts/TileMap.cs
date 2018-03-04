@@ -9,18 +9,23 @@ public class TileMap : MonoBehaviour
     public TilePrefabs[] tileTypes;
     public GameObject player1;
 
-    public int mapSizeX = 3;
-    public int mapSizeY = 6;
+    public static int mapSizeX = 3;
+    public static int mapSizeY = 6;
 
-    public TileObject[,] tiles;
+    public static Tile[,] tiles;
+
+    private void Awake()
+    {
+        // Allocate our map tiles
+        tiles = new Tile[mapSizeX, mapSizeY];
+        InitializeMapData();
+        GenerateMapVisual();
+    }
 
     // Use this for initialization
     void Start()
     {
-        // Allocate our map tiles
-        tiles = new TileObject[mapSizeX, mapSizeY];
-        InitializeMapData();
-        GenerateMapVisual();
+
     }
 
     // Populates the scene with tile Prefabs and saves a reference to the instantiated objects in the tiles array.
@@ -31,8 +36,8 @@ public class TileMap : MonoBehaviour
             for (int y = 0; y < mapSizeY; y++)
             {
                 TilePrefabs tileType = tileTypes[ (int) tiles[x, y].GetTileOwner() ];
-                GameObject tileInstant =  Instantiate(tileType.tileVisualPrefab, new Vector3(0 , 0, 0), Quaternion.identity);
-                Transform t = tileInstant.GetComponent<Transform>();
+                tiles[x,y].instance =  Instantiate(tileType.tileVisualPrefab, new Vector3(0 , 0, 0), Quaternion.identity);
+                Transform t = tiles[x,y].instance.GetComponent<Transform>();
                 float localScaleX = t.localScale.x;
                 float localScaleZ = t.localScale.z;
 
@@ -54,7 +59,7 @@ public class TileMap : MonoBehaviour
         {
             for (int y = 0; y < mapSizeY; y++)
             {
-                tiles[x, y] = new TileObject();
+                tiles[x, y] = new Tile();
                 tiles[x, y].SetXCoord(x);
                 tiles[x, y].SetYCoord(y);
 
