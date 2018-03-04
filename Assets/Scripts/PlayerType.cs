@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum TileOwner : int {
-    Player1 = 0,
-    Player2 = 1,
-    Neutral = 2    
+public enum PlayerType : int {
+    Neutral = 0,
+    Player1 = 1,
+    Player2 = 2,  
 }

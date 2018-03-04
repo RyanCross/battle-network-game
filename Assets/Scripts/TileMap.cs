@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class TileMap : MonoBehaviour
 {
- 
-    // even though public is here, by default it wont show up in the inspector. Need to add Serializable to the class
-    public TilePrefabs[] tileTypes;
+
+    public TilePrefabs[] tileTypes; // prefab tiles should be in the same order as PlayerType.
     public GameObject player1;
 
     public static int mapSizeX = 3;
@@ -65,11 +64,11 @@ public class TileMap : MonoBehaviour
 
                 if (y < (mapSizeY/2) )
                 {
-                    tiles[x, y].SetTileOwner(TileOwner.Player1);
+                    tiles[x, y].SetTileOwner(PlayerType.Player1);
                 }
                 else
                 {                   
-                    tiles[x, y].SetTileOwner(TileOwner.Player2);
+                    tiles[x, y].SetTileOwner(PlayerType.Player2);
                 }
             }
         }
@@ -81,10 +80,4 @@ public class TileMap : MonoBehaviour
     {
 
     }
-
-    public void MovePlayerTo()
-    {
-
-    }
-
 }
