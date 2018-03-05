@@ -2,32 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Tile is a predefined class in the Unity library, so TileObject will be used instead.
+// Tile is a predefined class in the Unity library, probably should rename this
 public class Tile {
-
-    private int xCoord;
-    private int yCoord;
+    // the Cartesian coordinates of the Tile
+    private int x;
+    private int y;
     private PlayerType tileOwner;
     public GameObject instance;
 
-    public void SetXCoord (int xCoord)
+    public void SetX (int xCoord)
     {
-        this.xCoord = xCoord;
+        this.x = xCoord;
     }
 
-    public int GetXCoord ()
+    public int GetX ()
     {
-        return this.xCoord;
+        return this.x;
     }
 
-    public void SetYCoord(int yCoord)
+    public void SetY(int yCoord)
     {
-        this.yCoord = yCoord;
+        this.y = yCoord;
     }
 
-    public int GetYCoord()
+    public int GetY()
     {
-        return this.yCoord;
+        return this.y;
     }
 
     public void SetTileOwner(PlayerType tileOwner)

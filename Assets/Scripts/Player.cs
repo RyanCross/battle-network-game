@@ -59,36 +59,47 @@ public class Player : MonoBehaviour {
         }
     }
 
-    // Checks for movement and updates player position to the correct tile if new attempted tile position is valid.
-    private void checkForMovement()
+    // Checks for movement and updates player positions to the correct tile if new attempted tile position is valid.
+    private void Move()
     {
         if (Input.GetKeyDown(KeyCode.D))
         {
-            if (currentTile.GetYCoord() + 1 <= TileMap.mapSizeY)
+            if (currentTile.GetY() + 1 < TileMap.mapSizeY)
             {
-                if (isTileOwner(TileMap.tiles[currentTile.GetXCoord(), currentTile.GetYCoord() + 1]))
-                updatePlayerPosition(TileMap.tiles, currentTile.GetXCoord(), currentTile.GetYCoord() + 1);
+                if (isTileOwner(TileMap.tiles[currentTile.GetX(), currentTile.GetY() + 1]))
+                {
+                    updatePlayerPosition(TileMap.tiles, currentTile.GetX(), currentTile.GetY() + 1);
+                }
             }
         }
         else if (Input.GetKeyDown(KeyCode.A))
         {
-            if (currentTile.GetYCoord() - 1 >= 0)
+            if (currentTile.GetY() - 1 >= 0)
             {
-                updatePlayerPosition(TileMap.tiles, currentTile.GetXCoord(), currentTile.GetYCoord() - 1);
+                if (isTileOwner(TileMap.tiles[currentTile.GetX(), currentTile.GetY() - 1]))
+                {
+                    updatePlayerPosition(TileMap.tiles, currentTile.GetX(), currentTile.GetY() - 1);
+                }
             }
         }
         else if (Input.GetKeyDown(KeyCode.S))
         {
-            if (currentTile.GetXCoord() + 1 <= TileMap.mapSizeX)
+            if (currentTile.GetX() + 1 < TileMap.mapSizeX)
             {
-                updatePlayerPosition(TileMap.tiles, currentTile.GetXCoord() + 1, currentTile.GetYCoord());
+                if (isTileOwner(TileMap.tiles[currentTile.GetX() + 1, currentTile.GetY()]))
+                {
+                    updatePlayerPosition(TileMap.tiles, currentTile.GetX() + 1, currentTile.GetY());
+                }
             }
         }
         else if (Input.GetKeyDown(KeyCode.W))
         {
-            if (currentTile.GetXCoord() - 1 >=  0)
+            if (currentTile.GetX() - 1 >=  0)
             {
-                updatePlayerPosition(TileMap.tiles, currentTile.GetXCoord() - 1, currentTile.GetYCoord());
+                if (isTileOwner(TileMap.tiles[currentTile.GetX() - 1, currentTile.GetY()]))
+                {
+                    updatePlayerPosition(TileMap.tiles, currentTile.GetX() - 1, currentTile.GetY());
+                }
             }
         }
     }
@@ -111,13 +122,13 @@ public class Player : MonoBehaviour {
         }
         else
         {
-            this.checkForMovement();
+            this.Move();
         }
     }
 
     bool isTileOwner(Tile tileToCheck)
     {
-        if (this.playerType == tileToCheck)
+        if (this.playerType == tileToCheck.GetTileOwner())
         {
             return true;
         }

@@ -59,8 +59,8 @@ public class TileMap : MonoBehaviour
             for (int y = 0; y < mapSizeY; y++)
             {
                 tiles[x, y] = new Tile();
-                tiles[x, y].SetXCoord(x);
-                tiles[x, y].SetYCoord(y);
+                tiles[x, y].SetX(x);
+                tiles[x, y].SetY(y);
 
                 if (y < (mapSizeY/2) )
                 {
