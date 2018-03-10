@@ -12,6 +12,13 @@ public class Player : MonoBehaviour {
     public Tile currentTile;
     public PlayerType playerType;
 
+    KeyCode left = KeyCode.Joystick1Button2;
+    KeyCode right = KeyCode.Joystick1Button1;
+    KeyCode up = KeyCode.Joystick1Button3;
+    KeyCode down = KeyCode.Joystick1Button0;
+
+    public KeyCode shoot;
+
     // Use this for initialization
     void Start () {
         if (TileMap.tiles != null)
@@ -23,6 +30,10 @@ public class Player : MonoBehaviour {
         {
             throw new TileMapNotInitException("Error, tile map was not initialized properly");
         }
+
+        string[] temp = Input.GetJoystickNames();
+        Debug.Log(temp);
+
 	}
 
     // initializes the current tile of the player and sets the position of the player to the center of the starting tile
@@ -62,17 +73,8 @@ public class Player : MonoBehaviour {
     // Checks for movement and updates player positions to the correct tile if new attempted tile position is valid.
     private void Move()
     {
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            if (currentTile.GetY() + 1 < TileMap.mapSizeY)
-            {
-                if (isTileOwner(TileMap.tiles[currentTile.GetX(), currentTile.GetY() + 1]))
-                {
-                    updatePlayerPosition(TileMap.tiles, currentTile.GetX(), currentTile.GetY() + 1);
-                }
-            }
-        }
-        else if (Input.GetKeyDown(KeyCode.A))
+        // left 
+        if (Input.GetKeyDown(left))
         {
             if (currentTile.GetY() - 1 >= 0)
             {
@@ -82,23 +84,36 @@ public class Player : MonoBehaviour {
                 }
             }
         }
-        else if (Input.GetKeyDown(KeyCode.S))
+        // right
+        else if (Input.GetKeyDown(right))
+        {
+            if (currentTile.GetY() + 1 < TileMap.mapSizeY)
+            {
+                if (isTileOwner(TileMap.tiles[currentTile.GetX(), currentTile.GetY() + 1]))
+                {
+                    updatePlayerPosition(TileMap.tiles, currentTile.GetX(), currentTile.GetY() + 1);
+                }
+            }
+        }
+        // up
+        else if (Input.GetKeyDown(up))
+        {
+            if (currentTile.GetX() - 1 >= 0)
+            {
+                if (isTileOwner(TileMap.tiles[currentTile.GetX() - 1, currentTile.GetY()]))
+                {
+                    updatePlayerPosition(TileMap.tiles, currentTile.GetX() - 1, currentTile.GetY());
+                }
+            }
+        }
+        // down
+        else if (Input.GetKeyDown(down))
         {
             if (currentTile.GetX() + 1 < TileMap.mapSizeX)
             {
                 if (isTileOwner(TileMap.tiles[currentTile.GetX() + 1, currentTile.GetY()]))
                 {
                     updatePlayerPosition(TileMap.tiles, currentTile.GetX() + 1, currentTile.GetY());
-                }
-            }
-        }
-        else if (Input.GetKeyDown(KeyCode.W))
-        {
-            if (currentTile.GetX() - 1 >=  0)
-            {
-                if (isTileOwner(TileMap.tiles[currentTile.GetX() - 1, currentTile.GetY()]))
-                {
-                    updatePlayerPosition(TileMap.tiles, currentTile.GetX() - 1, currentTile.GetY());
                 }
             }
         }
