@@ -5,35 +5,27 @@ using UnityEngine;
 public class Player : MonoBehaviour {
 
     // tiles should already be initialized.
-
     Transform playerTransform;
     public int startX;
     public int startY;
-    public Tile currentTile;
+    public Tile currentTile; //refactor to private
     public PlayerType playerType;
+    ControlScheme playerControls;
 
-    KeyCode left = KeyCode.Joystick1Button2;
-    KeyCode right = KeyCode.Joystick1Button1;
-    KeyCode up = KeyCode.Joystick1Button3;
-    KeyCode down = KeyCode.Joystick1Button0;
-
-    bool isAxisHorizontalInUse = false;
-    bool isAxisVerticalInUse = false;
-    float movementCooldown = .2f; // cooldown time in seconds
+    float movementCooldown = .25f; // cooldown time between accepted movement input
     float timeLastMoved;
 
-
-
-
-
-    public KeyCode shoot;
 
     // Use this for initialization
     void Start () {
         if (TileMap.tiles != null)
         {
+            // Initalize default controls:
+            playerControls = new ControlScheme();
+            playerControls.determineDefaults(playerType);
             playerTransform = this.GetComponent<Transform>();
             setPlayerStartPos();
+            
         }
         else
         {
@@ -42,8 +34,6 @@ public class Player : MonoBehaviour {
 
         string[] temp = Input.GetJoystickNames();
         Debug.Log(temp);
-        timeLastMoved = Time.time; // this is going to cause an initial delay.
-
 	}
 
     // initializes the current tile of the player and sets the position of the player to the center of the starting tile
@@ -84,68 +74,50 @@ public class Player : MonoBehaviour {
     private void Move()
     {
         // left 
-        if (Input.GetAxisRaw("HorizontalXbox360") == -1)
+        if (Input.GetAxisRaw(playerControls.horizontalAxisName) == -1)
         {
             if (currentTile.GetY() - 1 >= 0)
             {
-                if (isTileOwner(TileMap.tiles[currentTile.GetX(), currentTile.GetY() - 1]) && isAxisHorizontalInUse == false && (Time.time >= timeLastMoved + movementCooldown))
+                if (isTileOwner(TileMap.tiles[currentTile.GetX(), currentTile.GetY() - 1]) && (Time.time >= timeLastMoved + movementCooldown))
                 {
-                    isAxisHorizontalInUse = true;
                     timeLastMoved = Time.time;
                     updatePlayerPosition(TileMap.tiles, currentTile.GetX(), currentTile.GetY() - 1);
-                }
-                else
-                {
-                    isAxisHorizontalInUse = false;
                 }
             }
         }
         // right
-        else if (Input.GetAxisRaw("HorizontalXbox360") == 1)
+        else if (Input.GetAxisRaw(playerControls.horizontalAxisName) == 1)
         {
             if (currentTile.GetY() + 1 < TileMap.mapSizeY)
             {
-                if (isTileOwner(TileMap.tiles[currentTile.GetX(), currentTile.GetY() + 1]) && isAxisHorizontalInUse == false && (Time.time >= timeLastMoved + movementCooldown))
+                if (isTileOwner(TileMap.tiles[currentTile.GetX(), currentTile.GetY() + 1]) && (Time.time >= timeLastMoved + movementCooldown))
                 {
-                    isAxisHorizontalInUse = true;
                     timeLastMoved = Time.time;
                     updatePlayerPosition(TileMap.tiles, currentTile.GetX(), currentTile.GetY() + 1);
-                }
-                else
-                {
-                    isAxisHorizontalInUse = false;
                 }
             }
         }
         // up
-        else if (Input.GetAxisRaw("VerticalXbox360") == 1)
+        else if (Input.GetAxisRaw(playerControls.verticalAxisName) == 1)
         {
             if (currentTile.GetX() - 1 >= 0)
             {
-                if (isTileOwner(TileMap.tiles[currentTile.GetX() - 1, currentTile.GetY()]) && isAxisVerticalInUse == false)
+                if (isTileOwner(TileMap.tiles[currentTile.GetX() - 1, currentTile.GetY()]) && (Time.time >= timeLastMoved + movementCooldown))
                 {
-                    isAxisVerticalInUse = true;
+                    timeLastMoved = Time.time;
                     updatePlayerPosition(TileMap.tiles, currentTile.GetX() - 1, currentTile.GetY());
-                }
-                else
-                {
-                    isAxisVerticalInUse = false;
                 }
             }
         }
         // down
-        else if (Input.GetAxisRaw("VerticalXbox360") == -1)
+        else if (Input.GetAxisRaw(playerControls.verticalAxisName) == -1)
         {
             if (currentTile.GetX() + 1 < TileMap.mapSizeX)
             {
-                if (isTileOwner(TileMap.tiles[currentTile.GetX() + 1, currentTile.GetY()]) && isAxisVerticalInUse == false)
+                if (isTileOwner(TileMap.tiles[currentTile.GetX() + 1, currentTile.GetY()]) && (Time.time >= timeLastMoved + movementCooldown))
                 {
-                    isAxisVerticalInUse = true;
+                    timeLastMoved = Time.time;
                     updatePlayerPosition(TileMap.tiles, currentTile.GetX() + 1, currentTile.GetY());
-                }
-                else
-                {
-                    isAxisVerticalInUse = false;
                 }
             }   
         }
@@ -153,7 +125,7 @@ public class Player : MonoBehaviour {
 
 
     // this is needed so the player object switches tiles it does not clip through the middle of the tile. 
-    // puts the player objects bottom face at the top face of the tile.
+    // places the player directly atop the tile.
     public float calculatePlayerYPos (Bounds playerBounds, Bounds tileBounds, float playerScaleY)
     {
         float yPos = playerScaleY + playerBounds.min.y + tileBounds.max.y;
