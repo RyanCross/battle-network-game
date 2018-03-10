@@ -17,6 +17,15 @@ public class Player : MonoBehaviour {
     KeyCode up = KeyCode.Joystick1Button3;
     KeyCode down = KeyCode.Joystick1Button0;
 
+    bool isAxisHorizontalInUse = false;
+    bool isAxisVerticalInUse = false;
+    float movementCooldown = .2f; // cooldown time in seconds
+    float timeLastMoved;
+
+
+
+
+
     public KeyCode shoot;
 
     // Use this for initialization
@@ -33,6 +42,7 @@ public class Player : MonoBehaviour {
 
         string[] temp = Input.GetJoystickNames();
         Debug.Log(temp);
+        timeLastMoved = Time.time; // this is going to cause an initial delay.
 
 	}
 
@@ -74,48 +84,70 @@ public class Player : MonoBehaviour {
     private void Move()
     {
         // left 
-        if (Input.GetKeyDown(left))
+        if (Input.GetAxisRaw("HorizontalXbox360") == -1)
         {
             if (currentTile.GetY() - 1 >= 0)
             {
-                if (isTileOwner(TileMap.tiles[currentTile.GetX(), currentTile.GetY() - 1]))
+                if (isTileOwner(TileMap.tiles[currentTile.GetX(), currentTile.GetY() - 1]) && isAxisHorizontalInUse == false && (Time.time >= timeLastMoved + movementCooldown))
                 {
+                    isAxisHorizontalInUse = true;
+                    timeLastMoved = Time.time;
                     updatePlayerPosition(TileMap.tiles, currentTile.GetX(), currentTile.GetY() - 1);
+                }
+                else
+                {
+                    isAxisHorizontalInUse = false;
                 }
             }
         }
         // right
-        else if (Input.GetKeyDown(right))
+        else if (Input.GetAxisRaw("HorizontalXbox360") == 1)
         {
             if (currentTile.GetY() + 1 < TileMap.mapSizeY)
             {
-                if (isTileOwner(TileMap.tiles[currentTile.GetX(), currentTile.GetY() + 1]))
+                if (isTileOwner(TileMap.tiles[currentTile.GetX(), currentTile.GetY() + 1]) && isAxisHorizontalInUse == false && (Time.time >= timeLastMoved + movementCooldown))
                 {
+                    isAxisHorizontalInUse = true;
+                    timeLastMoved = Time.time;
                     updatePlayerPosition(TileMap.tiles, currentTile.GetX(), currentTile.GetY() + 1);
+                }
+                else
+                {
+                    isAxisHorizontalInUse = false;
                 }
             }
         }
         // up
-        else if (Input.GetKeyDown(up))
+        else if (Input.GetAxisRaw("VerticalXbox360") == 1)
         {
             if (currentTile.GetX() - 1 >= 0)
             {
-                if (isTileOwner(TileMap.tiles[currentTile.GetX() - 1, currentTile.GetY()]))
+                if (isTileOwner(TileMap.tiles[currentTile.GetX() - 1, currentTile.GetY()]) && isAxisVerticalInUse == false)
                 {
+                    isAxisVerticalInUse = true;
                     updatePlayerPosition(TileMap.tiles, currentTile.GetX() - 1, currentTile.GetY());
+                }
+                else
+                {
+                    isAxisVerticalInUse = false;
                 }
             }
         }
         // down
-        else if (Input.GetKeyDown(down))
+        else if (Input.GetAxisRaw("VerticalXbox360") == -1)
         {
             if (currentTile.GetX() + 1 < TileMap.mapSizeX)
             {
-                if (isTileOwner(TileMap.tiles[currentTile.GetX() + 1, currentTile.GetY()]))
+                if (isTileOwner(TileMap.tiles[currentTile.GetX() + 1, currentTile.GetY()]) && isAxisVerticalInUse == false)
                 {
+                    isAxisVerticalInUse = true;
                     updatePlayerPosition(TileMap.tiles, currentTile.GetX() + 1, currentTile.GetY());
                 }
-            }
+                else
+                {
+                    isAxisVerticalInUse = false;
+                }
+            }   
         }
     }
 
