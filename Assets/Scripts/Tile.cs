@@ -6,41 +6,10 @@ namespace RyanCross.BattleNetworkGame
 {
     public class Tile
     {
-        // the Cartesian coordinates of the Tile
-        private int x;
-        private int y;
-        private PlayerType tileOwner;
+        internal int xCoord { get; set; }
+        internal int yCoord { get; set; }
+        internal PlayerType TileOwner { get; set;}
         public GameObject instance;
-
-        public void SetX(int xCoord)
-        {
-            this.x = xCoord;
-        }
-
-        public int GetX()
-        {
-            return this.x;
-        }
-
-        public void SetY(int yCoord)
-        {
-            this.y = yCoord;
-        }
-
-        public int GetY()
-        {
-            return this.y;
-        }
-
-        public void SetTileOwner(PlayerType tileOwner)
-        {
-            this.tileOwner = tileOwner;
-        }
-
-        public PlayerType GetTileOwner()
-        {
-            return this.tileOwner;
-        }
     }
 }
 

@@ -34,13 +34,13 @@ namespace RyanCross.BattleNetworkGame
             {
                 for (int y = 0; y < mapSizeY; y++)
                 {
-                    TilePrefabs tileType = tileTypes[(int)tiles[x, y].GetTileOwner()];
+                    TilePrefabs tileType = tileTypes[(int)tiles[x, y].TileOwner];
                     tiles[x, y].instance = Instantiate(tileType.tileVisualPrefab, new Vector3(0, 0, 0), Quaternion.identity);
                     Transform t = tiles[x, y].instance.GetComponent<Transform>();
                     float localScaleX = t.localScale.x;
                     float localScaleZ = t.localScale.z;
 
-                    //the y coordinate of the 2 dimensional array will actually represent the z position
+                    // the y coordinate of the 2 dimensional array will actually represent the z position
                     t.SetPositionAndRotation(new Vector3(x * localScaleX, 0, y * localScaleZ), Quaternion.identity);
                 }
             }
@@ -59,16 +59,16 @@ namespace RyanCross.BattleNetworkGame
                 for (int y = 0; y < mapSizeY; y++)
                 {
                     tiles[x, y] = new Tile();
-                    tiles[x, y].SetX(x);
-                    tiles[x, y].SetY(y);
+                    tiles[x, y].xCoord = x;
+                    tiles[x, y].yCoord = y;
 
                     if (y < (mapSizeY / 2))
                     {
-                        tiles[x, y].SetTileOwner(PlayerType.Player1);
+                        tiles[x, y].TileOwner = PlayerType.Player1;
                     }
                     else
                     {
-                        tiles[x, y].SetTileOwner(PlayerType.Player2);
+                        tiles[x, y].TileOwner = PlayerType.Player2;
                     }
                 }
             }

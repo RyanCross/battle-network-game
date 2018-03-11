@@ -10,7 +10,7 @@ namespace RyanCross.BattleNetworkGame
         public float fireRate = 0f;
         public float damage = 5f;
         public LayerMask whatToHit; // needs to be set to opposite player in inspector or this wont hit the right player.
-        public PlayerType playerShooting; // should probably have the player object initialize all these variables. one single point of truth that determines player initialization.
+        public PlayerType playerShooting { get; private set; }
 
         public float timeToFire = 0f;
         Transform firePoint;
@@ -27,7 +27,7 @@ namespace RyanCross.BattleNetworkGame
         // Use this for initialization
         void Start()
         {
-
+            playerShooting = GetComponentInParent<Player>().playerType;
         }
 
         // Update is called once per frame

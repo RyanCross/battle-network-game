@@ -6,18 +6,16 @@ namespace RyanCross.BattleNetworkGame
 {
     public class Player : MonoBehaviour
     {
-
-        // tiles should already be initialized.
-        Transform playerTransform;
+        // tiles should already be initialized.     
         public int startX;
         public int startY;
-        public Tile currentTile; //refactor to private
         public PlayerType playerType;
+        public float movementCooldown = .25f; // cooldown time between accepted movement input
+
+        internal Transform PlayerTransform { get; private set; }
+        internal Tile CurrentTile { get; private set; } 
         ControlScheme playerControls;
-
-        float movementCooldown = .25f; // cooldown time between accepted movement input
         float timeLastMoved;
-
 
         // Use this for initialization
         void Start()
@@ -27,7 +25,7 @@ namespace RyanCross.BattleNetworkGame
                 // Initalize default controls:
                 playerControls = new ControlScheme();
                 playerControls.determineDefaults(playerType);
-                playerTransform = this.GetComponent<Transform>();
+                PlayerTransform = this.GetComponent<Transform>();
                 SetPlayerStartPos();
 
             }
@@ -46,14 +44,14 @@ namespace RyanCross.BattleNetworkGame
             if (this.GetComponent<BoxCollider>() != null)
             {
                 // init starting location
-                this.currentTile = TileMap.tiles[this.startX, this.startY];
+                this.CurrentTile = TileMap.tiles[this.startX, this.startY];
 
-                Transform tileTransform = currentTile.instance.GetComponent<Transform>();
+                Transform tileTransform = CurrentTile.instance.GetComponent<Transform>();
                 Bounds playerBounds = this.GetComponent<BoxCollider>().bounds;
-                Bounds tileBounds = currentTile.instance.GetComponent<BoxCollider>().bounds;
+                Bounds tileBounds = CurrentTile.instance.GetComponent<BoxCollider>().bounds;
                 // put player at center of the tile
-                Vector3 playerPos = new Vector3(tileTransform.position.x, CalculatePlayerYPos(playerBounds, tileBounds, playerTransform.localScale.y), tileTransform.position.z);
-                playerTransform.SetPositionAndRotation(playerPos, Quaternion.identity);
+                Vector3 playerPos = new Vector3(tileTransform.position.x, CalculatePlayerYPos(playerBounds, tileBounds, PlayerTransform.localScale.y), tileTransform.position.z);
+                PlayerTransform.SetPositionAndRotation(playerPos, Quaternion.identity);
 
             }
         }
@@ -63,14 +61,14 @@ namespace RyanCross.BattleNetworkGame
         {
             if (this.GetComponent<BoxCollider>() != null)
             {
-                currentTile = tiles[tileCoordX, tileCoordY];
+                CurrentTile = tiles[tileCoordX, tileCoordY];
 
-                Transform tileTransform = currentTile.instance.GetComponent<Transform>();
+                Transform tileTransform = CurrentTile.instance.GetComponent<Transform>();
                 Bounds playerBounds = this.GetComponent<BoxCollider>().bounds;
-                Bounds tileBounds = currentTile.instance.GetComponent<BoxCollider>().bounds;
+                Bounds tileBounds = CurrentTile.instance.GetComponent<BoxCollider>().bounds;
                 // put player at center of the tile
-                Vector3 playerPos = new Vector3(tileTransform.position.x, playerTransform.position.y, tileTransform.position.z);
-                playerTransform.SetPositionAndRotation(playerPos, Quaternion.identity);
+                Vector3 playerPos = new Vector3(tileTransform.position.x, PlayerTransform.position.y, tileTransform.position.z);
+                PlayerTransform.SetPositionAndRotation(playerPos, Quaternion.identity);
             }
         }
 
@@ -79,49 +77,49 @@ namespace RyanCross.BattleNetworkGame
         {
             // left 
             if (Input.GetAxisRaw(playerControls.horizontalAxisName) == -1)
-            {
-                if (currentTile.GetY() - 1 >= 0)
+            { 
+                if (CurrentTile.yCoord - 1 >= 0)
                 {
-                    if (IsTileOwner(TileMap.tiles[currentTile.GetX(), currentTile.GetY() - 1]) && (Time.time >= timeLastMoved + movementCooldown))
+                    if (IsTileOwner(TileMap.tiles[CurrentTile.xCoord, CurrentTile.yCoord - 1]) && (Time.time >= timeLastMoved + movementCooldown))
                     {
                         timeLastMoved = Time.time;
-                        UpdatePlayerPosition(TileMap.tiles, currentTile.GetX(), currentTile.GetY() - 1);
+                        UpdatePlayerPosition(TileMap.tiles, CurrentTile.xCoord, CurrentTile.yCoord - 1);
                     }
                 }
             }
             // right
             else if (Input.GetAxisRaw(playerControls.horizontalAxisName) == 1)
             {
-                if (currentTile.GetY() + 1 < TileMap.mapSizeY)
+                if (CurrentTile.yCoord + 1 < TileMap.mapSizeY)
                 {
-                    if (IsTileOwner(TileMap.tiles[currentTile.GetX(), currentTile.GetY() + 1]) && (Time.time >= timeLastMoved + movementCooldown))
+                    if (IsTileOwner(TileMap.tiles[CurrentTile.xCoord, CurrentTile.yCoord + 1]) && (Time.time >= timeLastMoved + movementCooldown))
                     {
                         timeLastMoved = Time.time;
-                        UpdatePlayerPosition(TileMap.tiles, currentTile.GetX(), currentTile.GetY() + 1);
+                        UpdatePlayerPosition(TileMap.tiles, CurrentTile.xCoord, CurrentTile.yCoord + 1);
                     }
                 }
             }
             // up
             else if (Input.GetAxisRaw(playerControls.verticalAxisName) == 1)
             {
-                if (currentTile.GetX() - 1 >= 0)
+                if (CurrentTile.xCoord - 1 >= 0)
                 {
-                    if (IsTileOwner(TileMap.tiles[currentTile.GetX() - 1, currentTile.GetY()]) && (Time.time >= timeLastMoved + movementCooldown))
+                    if (IsTileOwner(TileMap.tiles[CurrentTile.xCoord - 1, CurrentTile.yCoord]) && (Time.time >= timeLastMoved + movementCooldown))
                     {
                         timeLastMoved = Time.time;
-                        UpdatePlayerPosition(TileMap.tiles, currentTile.GetX() - 1, currentTile.GetY());
+                        UpdatePlayerPosition(TileMap.tiles, CurrentTile.xCoord - 1, CurrentTile.yCoord);
                     }
                 }
             }
             // down
             else if (Input.GetAxisRaw(playerControls.verticalAxisName) == -1)
             {
-                if (currentTile.GetX() + 1 < TileMap.mapSizeX)
+                if (CurrentTile.xCoord + 1 < TileMap.mapSizeX)
                 {
-                    if (IsTileOwner(TileMap.tiles[currentTile.GetX() + 1, currentTile.GetY()]) && (Time.time >= timeLastMoved + movementCooldown))
+                    if (IsTileOwner(TileMap.tiles[CurrentTile.xCoord + 1, CurrentTile.yCoord]) && (Time.time >= timeLastMoved + movementCooldown))
                     {
                         timeLastMoved = Time.time;
-                        UpdatePlayerPosition(TileMap.tiles, currentTile.GetX() + 1, currentTile.GetY());
+                        UpdatePlayerPosition(TileMap.tiles, CurrentTile.xCoord + 1, CurrentTile.yCoord);
                     }
                 }
             }
@@ -139,7 +137,7 @@ namespace RyanCross.BattleNetworkGame
         // Update is called once per frame
         void Update()
         {
-            if (currentTile == null)
+            if (CurrentTile == null)
             {
                 Debug.Log("Something went wrong, currentTile of player is null");
             }
@@ -151,7 +149,7 @@ namespace RyanCross.BattleNetworkGame
 
         bool IsTileOwner(Tile tileToCheck)
         {
-            if (this.playerType == tileToCheck.GetTileOwner())
+            if (this.playerType == tileToCheck.TileOwner)
             {
                 return true;
             }

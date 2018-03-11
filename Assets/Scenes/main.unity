@@ -268,7 +268,6 @@ MonoBehaviour:
   whatToHit:
     serializedVersion: 2
     m_Bits: 512
-  playerShooting: 1
   timeToFire: 0
 --- !u!1 &955022658
 GameObject:
@@ -315,7 +314,6 @@ MonoBehaviour:
   whatToHit:
     serializedVersion: 2
     m_Bits: 256
-  playerShooting: 2
   timeToFire: 0
 --- !u!1 &1021258902
 GameObject:
