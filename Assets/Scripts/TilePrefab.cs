@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//tells unity this class is indeed seriaziable so public variables of this class show up in inspector.
-[System.Serializable]
-//Tiletype doesn't need  implement the MonoBehavior Interface, its just a regular C# class
-public class TilePrefabs {
-
-    public string name;
-    public GameObject tileVisualPrefab;
+namespace RyanCross.BattleNetworkGame
+{
+    // telling unity that this class is Serializable will allow it to show up in the inspector
+    [System.Serializable]
+    public class TilePrefabs
+    {
+        public string name;
+        public GameObject tileVisualPrefab;
+    }
 }

@@ -1,19 +1,23 @@
 ﻿using System;
 
-public class TileMapNotInitException : Exception
+namespace RyanCross.BattleNetworkGame
 {
-
-    public TileMapNotInitException()
+    public class TileMapNotInitException : Exception
     {
-    }
 
-    public TileMapNotInitException(string message)
-        : base(message)
-    {
-    }
+        public TileMapNotInitException()
+        {
+        }
 
-    public TileMapNotInitException(string message, Exception inner)
-        : base(message, inner)
-    {
+        public TileMapNotInitException(string message)
+            : base(message)
+        {
+        }
+
+        public TileMapNotInitException(string message, Exception inner)
+            : base(message, inner)
+        {
+        }
     }
 }
+
